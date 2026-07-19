@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <style>
+        :root {
+            --neon-pink: #ff007f;
+            --neon-blue: #00d2ff;
+            --dark-bg: #0f0c29;
+            --text-color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Full Screen Celebration Overlay */
+        .celebration-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Let clicks pass through to main content */
+            z-index: -1; /* Behind main content, but in front of background gradient */
+        }
+
+        /* General Falling/Flying Elements (Confetti, Balloons, Cakes) */
+        .celebration-piece {
+            position: absolute;
+            background: red; /* Fallback color */
+            pointer-events: none;
+            opacity: 0.9;
+        }
+
+        /* --- Animations --- */
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        @keyframes flyUp {
+            from { transform: translateY(100vh); opacity: 1; }
+            to { transform: translateY(-10vh) translateX(calc(10vw * (random(20)-10)/10)) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes floatCake {
+            from { transform: translateX(calc(-10vw * (random(10)-5)/10)) translateY(100vh) rotate(0deg); opacity: 1; }
+            to { transform: translateX(calc(100vw * (random(10)-5)/10)) translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes explodePopper {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes floatPic {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- Specific Element Styles --- */
+        
+        /* Confetti (Falling from top) */
+        .confetti-piece {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            top: -20px;
+            animation: fall var(--duration) linear infinite;
+        }
+
+        /* Balloons (Flying up from bottom) */
+        .balloon-element {
+            width: 60px;
+            height: 75px;
+            border-radius: 50% 50% 10% 10%;
+            border: 3px solid white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            bottom: -80px;
+            opacity: 0;
+            animation: flyUp var(--duration) ease-out infinite;
+        }
+
+        /* Cakes (Gliding across/up from bottom-ish) */
+        .cake-element {
+            font-size: 3.5rem;
+            position: absolute;
+            bottom: -90px;
+            opacity: 0;
+            animation: floatCake var(--duration) ease-in-out infinite;
+        }
+
+        /* Popper Confetti (Explosion effect) */
+        .popper-confetti {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px; /* Position of explosion */
+            left: 20px;
+            animation: fall calc(var(--duration)/2) linear infinite, explodePopper var(--duration) ease-out forwards;
+        }
+
+
+        /* --- Main Content Styling --- */
+        
+        header { padding: 40px 20px 20px; position: relative; z-index: 1;}
+
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            animation: pulse 2s infinite;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+        }
+
+        /* Music Button Styling */
+        .music-btn {
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            color: white;
+            padding: 10px 25px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--neon-blue);
+            transition: 0.3s;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .music-btn:hover {
+            background: var(--neon-blue);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gallery img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 3px solid white;
+            animation: floatPic 3s ease-in-out infinite;
+            transition: 0.3s;
+        }
+
+        .gallery img:nth-child(even) { animation-delay: 0.5s; }
+
+        /* Gift Button */
+        .gift-btn {
+            margin: 40px 20px;
+            padding: 20px 40px;
+            font-size: 1.5em;
+            background: linear-gradient(to right, var(--neon-pink), var(--neon-blue));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--neon-pink);
+            transition: 0.3s;
+            width: 80%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gift-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--neon-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Full Screen Celebration Overlay -->
+    <div class="celebration-container" id="celebration-container"></div>
+
+    <header>
+        <h1>🎂 Happy Birthday! 🎈</h1>
+        <p>Happy Bithday Chomkar, Enjoy your day brother. Happy 18th Birthday nigger!!!!!!!!!!</p>
+	<p>Best wishes from PAPA ARYAN , PAPA PRAYASH & PAPA KESHAV<p>
+        
+        <!-- Audio Element (Hidden) -->
+        <audio id="bday-audio" loop>
+            <!-- Replace with your actual mp3 file -->
+            <source src="chomkardon.mp3" type="audio/mpeg">
+        </audio>
+        
+        <!-- Custom Play Button -->
+        <button id="music-btn" class="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
+    </header>
+
+    <div class="gallery">
+        <!-- Replace YOUR_PIC_X.jpg with your image names (e.g. image1.png, image2.jpg) -->
+        <img src="chomkar1.jpg" alt="Memory 1">
+        <img src="chomkar2.jpg" alt="Memory 2">
+        <img src="chomkar3.jpg" alt="Memory 3">
+        <img src="chomkar4.jpg" alt="Memory 4">
+    </div>
+
+    <!-- The Action Button -->
+    <button class="gift-btn" onclick="triggerGift()">Click for your gift! 🎁</button>
+
+    <script>
+        // --- Celebration Functions ---
+        
+        const celebrationContainer = document.getElementById('celebration-container');
+        
+        function generateConfetti() {
+            const pieceCount = 30;
+            const colors = ['#f8007a', '#00d2ff', '#fb0000', '#2bfb1b', '#ffff00', '#bf00ff'];
+            
+            for (let i = 0; i < pieceCount; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('celebration-piece', 'confetti-piece');
+                
+                // Random position across top width
+                piece.style.left = Math.random() * 100 + 'vw';
+                // Random background color
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                // Random animation duration
+                piece.style.setProperty('--duration', (Math.random() * 4 + 2) + 's');
+                // Random size variation
+                const sizeVal = Math.random() * 8 + 5;
+                piece.style.width = sizeVal + 'px';
+                piece.style.height = sizeVal + 'px';
+                
+                celebrationContainer.appendChild(piece);
+            }
+        }
+
+        function generateBalloons() {
+            const pieceCount = 15;
+            const colors = ['#ff6b6b', '#ff9f43', '#feca57', '#1dd1a1', '#48dbfb', '#5f27cd', '#eb3b5a'];
+            
+            for (let i = 0; i < pieceCount; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('celebration-piece', 'balloon-element');
+                
+                // Random position across width
+                piece.style.left = Math.random() * 100 + 'vw';
+                // Random background color
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                // Random animation duration
+                piece.style.setProperty('--duration', (Math.random() * 8 + 5) + 's');
+                // Random size variation
+                const scaleVal = Math.random() * 0.4 + 0.6; // 0.6 to 1
+                piece.style.transform = `scale(${scaleVal})`;
+                
+                celebrationContainer.appendChild(piece);
+            }
+        }
+
+        function generateCakes() {
+            const pieceCount = 8;
+            for (let i = 0; i < pieceCount; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('celebration-piece', 'cake-element');
+                piece.innerText = '🎂';
+                
+                // Random position along X, varying slightly
+                piece.style.left = (Math.random() * 100 - 10) + 'vw';
+                // Random animation duration
+                piece.style.setProperty('--duration', (Math.random() * 6 + 4) + 's');
+                // Random size variation
+                const scaleVal = Math.random() * 0.5 + 0.5; // 0.5 to 1
+                piece.style.transform = `scale(${scaleVal})`;
+                
+                celebrationContainer.appendChild(piece);
+            }
+        }
+
+        function generatePopperExplosion() {
+            const pieceCount = 40;
+            const colors = ['#ffffff', '#fff', '#aaa', '#eee']; // Popper confetti is usually white/silver
+            
+            for (let i = 0; i < pieceCount; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('celebration-piece', 'popper-confetti');
+                
+                // Start slightly offset to create explosion effect from top left corner
+                const startX = (Math.random() * 50 - 25); // +/- 25px
+                const startY = (Math.random() * 50 - 25); 
+                piece.style.left = (20 + startX) + 'px';
+                piece.style.top = (20 + startY) + 'px';
+
+                // Random background color (brights for popper)
+                piece.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                // Random animation duration for explode/fall
+                piece.style.setProperty('--duration', (Math.random() * 2 + 1) + 's');
+                // Random size variation
+                const sizeVal = Math.random() * 10 + 5;
+                piece.style.width = sizeVal + 'px';
+                piece.style.height = sizeVal + 'px';
+                
+                celebrationContainer.appendChild(piece);
+            }
+        }
+        
+        // --- Initialization on page load ---
+        window.addEventListener('load', () => {
+            generateConfetti();
+            generateBalloons();
+            generateCakes();
+            // Start a popper explosion right away
+            generatePopperExplosion();
+            // Optional: generate another popper explosion after some time
+            // setTimeout(generatePopperExplosion, 4000); 
+        });
+
+
+        // --- Music Player Logic ---
+        let isPlaying = false;
+        const audio = document.getElementById("bday-audio");
+        const musicBtn = document.getElementById("music-btn");
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicBtn.innerHTML = "🎵 Play Music";
+            } else {
+                audio.play();
+                musicBtn.innerHTML = "⏸️ Pause Music";
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // --- Gift Button Logic ---
+        function triggerGift() {
+            // Replace with your personalized message
+            const message = "Happy Birthday! Have an amazing day! Click OK to see your special gift. 🎉";
+            if(confirm(message)) {
+                // Replace YOUR_G_DRIVE_LINK_HERE with the actual Google Drive shareable link
+                window.location.href = "https://drive.google.com/drive/folders/1Qbasinp5bh09BxdsxmyEEVencX8gLJfy?usp=drive_link";
+            }
+        }
+    </script>
+</body>
+</html>
